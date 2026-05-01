@@ -3,6 +3,8 @@ SpriteImages();
 mapeo();
 
 let juegoIniciado = false;
+const parametrosURL = new URLSearchParams(window.location.search);
+const vieneDelLogin = parametrosURL.get('juego') === '1';
 
 function animate() {
     const animationID = window.requestAnimationFrame(animate);
@@ -148,28 +150,58 @@ function animate() {
     }
 }
 
-function empezarJuego() {
+function irAlLogin(modo = 'login') {
     if (juegoIniciado) return;
 
     juegoIniciado = true;
-    document.querySelector('#menuInicio').classList.add('ocultar');
+    const pantallaLogin = `backend/login.html?modo=${encodeURIComponent(modo)}`;
 
-    cambiarMusicaIntroAMapa();
+    reproducirGritoGiratina(() => {
+        document.querySelector('#menuInicio').classList.add('ocultar');
+        bajarVolumen(musicaIntro);
 
-    setTimeout(() => {
-        document.querySelector('#menuInicio').style.display = 'none';
-        animate();
-    }, 1000);
+        setTimeout(() => {
+            window.location.href = pantallaLogin;
+        }, 1000);
+    });
 }
 
-iniciarMusicaIntro();
+async function empezarJuegoDesdeLogin() {
+    const respuesta = await fetch('backend/session.php');
+    const sesion = await respuesta.json();
 
-window.addEventListener('keydown', (e) => {
-    if (!juegoIniciado) {
-        iniciarMusicaIntro();
+    if (!sesion.logged) {
+        window.location.href = 'backend/login.html';
+        return;
     }
 
+    juegoIniciado = true;
+    document.querySelector('#menuInicio').style.display = 'none';
+    document.querySelector('.displayDiv').style.opacity = 0;
+
+    cambiarMusicaIntroAMapa();
+    animate();
+
+    setTimeout(() => {
+        document.querySelector('.displayDiv').style.opacity = 1;
+    }, 100);
+}
+
+if (vieneDelLogin) {
+    empezarJuegoDesdeLogin();
+} else {
+    iniciarMusicaIntro();
+}
+
+window.addEventListener('keydown', (e) => {
+    if (e.repeat) return;
+
     if (e.key.toLowerCase() === 'a') {
-        empezarJuego();
+        irAlLogin();
+        return;
+    }
+
+    if (!juegoIniciado) {
+        iniciarMusicaIntro();
     }
 });

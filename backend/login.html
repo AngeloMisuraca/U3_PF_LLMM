@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Pokemon DAW</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="icon" href="../img/pokeball.gif" type="image/gif">
+</head>
+
+<body>
+    <audio id="musicaLogin" src="../audio/menu sound.mp3" autoplay loop preload="auto"></audio>
+
+    <main class="loginPantalla">
+        <section class="loginCaja">
+            <div class="perfilEntrenador">
+                <img src="../img/pokeball.gif" alt="Pokeball">
+                <div>
+                    <h1>Menú de partida</h1>
+                    <p>Pokémon DAW</p>
+                </div>
+            </div>
+
+            <div class="formularios">
+                <form id="formLogin" action="login.php" method="post">
+                    <h2>Continuar</h2>
+
+                    <label for="loginUsuario">Usuario</label>
+                    <input type="text" id="loginUsuario" name="usuario" required>
+
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+
+                    <button type="submit">Entrar</button>
+                </form>
+
+                <form id="formRegistro" action="register.php" method="post">
+                    <h2>Partida Nueva</h2>
+
+                    <label for="registroUsuario">Usuario</label>
+                    <input type="text" id="registroUsuario" name="usuario" required>
+
+                    <label for="registroEmail">Email</label>
+                    <input type="email" id="registroEmail" name="email" required>
+
+                    <label for="registroPassword">Password</label>
+                    <input type="password" id="registroPassword" name="password" required>
+
+                    <button type="submit">Crear cuenta</button>
+                </form>
+            </div>
+
+            <p id="mensajeLogin"></p>
+        </section>
+    </main>
+
+    <script src="../public/js/login.js"></script>
+    <script src="../public/js/register.js"></script>
+</body>
+</html>

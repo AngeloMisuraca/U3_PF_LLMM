@@ -11,6 +11,12 @@ const musicaBatalla = new Audio('./audio/battleSound.mp3');
 musicaBatalla.loop = true;
 musicaBatalla.volume = 0.4;
 
+const gritoGiratina = new Audio('./audio/Grito de Giratina1.mp3');
+gritoGiratina.volume = 0.2;
+gritoGiratina.loop = false;
+gritoGiratina.preload = 'auto';
+let gritoGiratinaReproducido = false;
+
 const sfx = {
     click: new Audio('./audio/clickSound.mp3'),
     rayo: new Audio('./audio/thunderSound.mp3'),
@@ -22,6 +28,25 @@ let audioIniciado = false;
 function iniciarMusicaIntro() {
     musicaIntro.play().catch(() => {
         console.log('El navegador espera una interaccion para reproducir audio.');
+    });
+}
+
+function reproducirGritoGiratina(alTerminar) {
+    if (gritoGiratinaReproducido) {
+        alTerminar();
+        return;
+    }
+
+    gritoGiratinaReproducido = true;
+    gritoGiratina.currentTime = 0;
+
+    gritoGiratina.onended = () => {
+        gritoGiratina.onended = null;
+        alTerminar();
+    };
+
+    gritoGiratina.play().catch(() => {
+        alTerminar();
     });
 }
 
