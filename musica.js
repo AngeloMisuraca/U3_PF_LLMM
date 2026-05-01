@@ -2,6 +2,11 @@ const musicaCiudad = new Audio('./audio/citySound.mp3');
 musicaCiudad.loop = true;
 musicaCiudad.volume = 0.4;
 
+const musicaIntro = document.querySelector('#musicaIntro');
+musicaIntro.volume = 0.4;
+musicaIntro.loop = true;
+musicaIntro.load();
+
 const musicaBatalla = new Audio('./audio/battleSound.mp3');
 musicaBatalla.loop = true;
 musicaBatalla.volume = 0.4;
@@ -14,14 +19,48 @@ const sfx = {
 
 let audioIniciado = false;
 
-window.addEventListener('keydown', (e) => {
-    if (!audioIniciado &&
-        (e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
-            e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-        musicaCiudad.play();
-        audioIniciado = true;
-    }
-});
+function iniciarMusicaIntro() {
+    musicaIntro.play().catch(() => {
+        console.log('El navegador espera una interaccion para reproducir audio.');
+    });
+}
+
+function bajarVolumen(audio) {
+    let volumenActual = audio.volume;
+
+    const intervalo = setInterval(() => {
+        volumenActual -= 0.05;
+        audio.volume = Math.max(volumenActual, 0);
+
+        if (audio.volume <= 0) {
+            clearInterval(intervalo);
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    }, 100);
+}
+
+function subirVolumen(audio) {
+    audio.volume = 0;
+    audio.play().catch(() => {
+        console.log('El navegador espera una interaccion para reproducir audio.');
+    });
+
+    const intervalo = setInterval(() => {
+        audio.volume = Math.min(audio.volume + 0.05, 0.4);
+
+        if (audio.volume >= 0.4) {
+            clearInterval(intervalo);
+        }
+    }, 1500);
+}
+
+function cambiarMusicaIntroAMapa() {
+    bajarVolumen(musicaIntro);
+    subirVolumen(musicaCiudad);
+    audioIniciado = true;
+}
+
 
 document.querySelectorAll('.footer button').forEach(button => {
     button.addEventListener('click', () => {

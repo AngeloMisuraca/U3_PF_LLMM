@@ -1,5 +1,31 @@
 body {
     background-color: black;
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#menuInicio {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 1024px;
+    height: 595px;
+    background-color: black;
+    z-index: 10;
+    opacity: 1;
+    transition: opacity 1s;
+}
+
+#menuInicio.ocultar {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.imagenInicio {
+    width: 1024px;
+    height: 595px;
+    object-fit: cover;
+    display: block;
 }
 
 .battleEscene {

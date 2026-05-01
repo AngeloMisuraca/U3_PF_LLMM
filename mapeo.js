@@ -19,14 +19,6 @@ function colisionRectangular({ rectangulo1, rectangulo2 }) {
 
 function mapeo() {
 
-    // Verifica que los datos necesarios del mapa existan antes de continuar la ejecución. ç
-    // Previene errores si el archivo de datos no fue cargado
-    // antes que este script.
-    if (typeof collisions === 'undefined' || typeof battle === 'undefined') {
-        console.error("ERROR: No se encontraron los datos de 'collisions' o 'battle'. Asegúrate de cargar el archivo de datos en el index.html antes que mapeo.js");
-        return;
-    }
-
     const collisionMap = [];
     for (let i = 0; i < collisions.length; i += 70) {
         collisionMap.push(collisions.slice(i, 70 + i));

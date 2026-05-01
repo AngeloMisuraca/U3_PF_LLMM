@@ -2,6 +2,8 @@ SpriteImages();
 
 mapeo();
 
+let juegoIniciado = false;
+
 function animate() {
     const animationID = window.requestAnimationFrame(animate);
     fondo.draw();
@@ -27,7 +29,7 @@ function animate() {
             if (colisionRectangular({
                 rectangulo1: jugador,
                 rectangulo2: battlezone
-            }) && Math.random() < 0.001
+            }) && Math.random() < 0.002
             ) {
                 // Detiene la animación del mapa
                 window.cancelAnimationFrame(animationID)
@@ -101,7 +103,7 @@ function animate() {
         //para verificar si el jugador chocará al moverse
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
-            // spread operator ...
+            
             if (colisionRectangular({ rectangulo1: jugador, rectangulo2: { ...limite, posicion: { x: limite.posicion.x, y: limite.posicion.y + 3 } } })) {
                 // Si hay colisión, no permite que el jugador se mueva
                 moving = false; break;
@@ -146,4 +148,28 @@ function animate() {
     }
 }
 
-animate();
+function empezarJuego() {
+    if (juegoIniciado) return;
+
+    juegoIniciado = true;
+    document.querySelector('#menuInicio').classList.add('ocultar');
+
+    cambiarMusicaIntroAMapa();
+
+    setTimeout(() => {
+        document.querySelector('#menuInicio').style.display = 'none';
+        animate();
+    }, 1000);
+}
+
+iniciarMusicaIntro();
+
+window.addEventListener('keydown', (e) => {
+    if (!juegoIniciado) {
+        iniciarMusicaIntro();
+    }
+
+    if (e.key.toLowerCase() === 'a') {
+        empezarJuego();
+    }
+});

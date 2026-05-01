@@ -23,7 +23,7 @@ function animateBattle() {
 // obtiene el ataque correspondiente al botón pulsado y
 // lo ejecuta sobre Charmander usando a Pikachu como atacante.
 // También comprueba si alguno de los dos Pokémon ha caído.
-document.querySelectorAll('button').forEach((button) => {
+document.querySelectorAll('.footer button').forEach((button) => {
     button.addEventListener('click', (e) => {
         if (!battleActivo.initiated) return;
 
@@ -260,9 +260,24 @@ function attack(attacker, { attack, recipient, renderSprites }) {
                 .to(attacker.posicion, { x: attacker.posicion.x, duration: 0.1, onComplete: alTerminarAtaque });
             break;
 
-        // Cuchillada: igual que Tackle en términos de animación,
-        // sin sprite de efecto, solo el movimiento del atacante.
+        // Cuchillada es igual que Tackle en términos de animación,
+        // sin sprite de efecto, solo el movimiento del atacante pero a mi,
         case 'cuchillada':
+            timeLine.to(attacker.posicion, { x: attacker.posicion.x - movementDistance, duration: 0.1 })
+                .to(attacker.posicion, {
+                    x: attacker.posicion.x + movementDistance * 2,
+                    duration: 0.05,
+                    onComplete: () => {
+                        const sigueVivo = attacker.applyDamage(recipient, attack, healthBar);
+                        if (!sigueVivo) return;
+                        gsap.to(recipient.posicion, { x: recipient.posicion.x + 10, yoyo: true, repeat: 3, duration: 0.06 });
+                        gsap.to(recipient, { opacity: 0, repeat: 3, yoyo: true, duration: 0.06 });
+                    }
+                })
+                .to(attacker.posicion, { x: attacker.posicion.x, duration: 0.1, onComplete: alTerminarAtaque });
+            break;
+        
+        case 'collejon':
             timeLine.to(attacker.posicion, { x: attacker.posicion.x - movementDistance, duration: 0.1 })
                 .to(attacker.posicion, {
                     x: attacker.posicion.x + movementDistance * 2,
