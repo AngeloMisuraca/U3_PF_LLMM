@@ -18,7 +18,7 @@ class Sprite {
     }
 
     draw() {
-        if (!this.width) return; //metodo de proteccion parque si nocarga a tiempo el witdh de la imagen retorne y no dibuje nada malo
+        if (!this.width) return; // PF3
 
         const columnasTrueno = 5;
         let col = 0;
@@ -33,9 +33,9 @@ class Sprite {
         }
 
         contexto.save(); 
-        contexto.globalAlpha = this.opacity; // Guarga el contexto actual de sus dimensiones  en este punto
+        contexto.globalAlpha = this.opacity; // PF3
 
-        contexto.drawImage( //modificamos el contexto para cambiar las dimensiones 
+        contexto.drawImage( // PF3
             this.image,
             col * this.width,
             fila * this.height,
@@ -46,18 +46,18 @@ class Sprite {
             this.width * this.scale,
             this.height * this.scale
         );
-        contexto.restore(); // Restaura el contexto a como estaba antes cuando se guardo
+        contexto.restore(); // PF3
 
         if (!this.animate) return;
 
-        if (this.frames.max > 1) { //esto hace que la animacion con el contador pase frame a frame y se vea el movimiento
+        if (this.frames.max > 1) { // PF3
             this.frames.elapsed++;
         }
 
         let framesPorCambio;
 
         if (this.frames.max > 4) { 
-            framesPorCambio = 6;  // si teine mas de 4 frames la imagen ira a una velocidad de 6 frames por cambio, mientras mas alto mas lento y mietnras mas bajo mas rapido                                  
+            framesPorCambio = 6;  // PF3
         }
         else {
             if (this.animSpeed) {
@@ -82,7 +82,7 @@ class Sprite {
         dialogo.style.display = 'block';
 
         if (this.isEnemy) {
-            dialogo.innerHTML = this.name + ' ha muerto!<br>¡Has ganado la batalla!';
+            dialogo.innerHTML = this.name + ' ha muerto!<br>??Has ganado la batalla!';
         } else {
             dialogo.innerHTML = this.name + ' ha muerto!<br>Has perdido la batalla...';
         }

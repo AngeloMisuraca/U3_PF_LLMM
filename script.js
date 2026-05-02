@@ -3,8 +3,6 @@ SpriteImages();
 mapeo();
 
 let juegoIniciado = false;
-const parametrosURL = new URLSearchParams(window.location.search);
-const vieneDelLogin = parametrosURL.get('juego') === '1';
 
 function animate() {
     const animationID = window.requestAnimationFrame(animate);
@@ -21,7 +19,7 @@ function animate() {
     let moving = true;
     jugador.animate = false;
 
-    // Si ya hay batalla iniciada, se detiene la animación del mapa
+    // PF3
     if (battleActivo.initiated) return
 
     if (keys.ArrowUp.presionada || keys.ArrowDown.presionada || keys.ArrowLeft.presionada || keys.ArrowRight.presionada) {
@@ -33,10 +31,10 @@ function animate() {
                 rectangulo2: battlezone
             }) && Math.random() < 0.002
             ) {
-                // Detiene la animación del mapa
+                // PF3
                 window.cancelAnimationFrame(animationID)
 
-                // Cambiamos la musica de ciudad a la musica de batalla
+                // PF3
                 musicaCiudad.pause();
                 musicaBatalla.currentTime = 10;
                 musicaBatalla.play();
@@ -53,11 +51,11 @@ function animate() {
                 gsap.set(pikachu.posicion, { x: 380, y: 490 });
                 gsap.set(charmander.posicion, { x: 788, y: 140 });
 
-                // Animación de transición a batalla
+                // PF3
                 gsap.to('#overlappingDiv', {
                     opacity: 1,
                     repeat: 3,
-                    yoyo: true, // sube y baja la opacidad 
+                    yoyo: true, // PF3
                     duration: 0.5,
                     onComplete() {
                         gsap.to('#overlappingDiv', {
@@ -70,7 +68,7 @@ function animate() {
 
                                 animateBattle();
 
-                                //apaga todo despues de la pelea
+                                // PF3
                                 gsap.to('#overlappingDiv', {
                                     opacity: 0,
                                     duration: 0.5
@@ -97,26 +95,26 @@ function animate() {
     }
 
     if (keys.ArrowUp.presionada && ultimaKey === "ArrowUp") {
-        //inicia la animacion del personaje
+        // PF3
         jugador.animate = true
-        jugador.image = jugador.sprites.arriba
+        ponerDireccionJugador('arriba')
 
-        //Recorre todos los límites del mapa
-        //para verificar si el jugador chocará al moverse
+        // PF3
+        // PF3
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
             
             if (colisionRectangular({ rectangulo1: jugador, rectangulo2: { ...limite, posicion: { x: limite.posicion.x, y: limite.posicion.y + 3 } } })) {
-                // Si hay colisión, no permite que el jugador se mueva
+                // PF3
                 moving = false; break;
             }
         }
-        // hace que la pantalla siga para abajo
+        // PF3
         if (moving) simboloMovible.forEach(Movibles => { Movibles.posicion.y += velocidad })
     }
     else if (keys.ArrowDown.presionada && ultimaKey == "ArrowDown") {
         jugador.animate = true
-        jugador.image = jugador.sprites.abajo
+        ponerDireccionJugador('abajo')
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
 
@@ -128,7 +126,7 @@ function animate() {
     }
     else if (keys.ArrowLeft.presionada && ultimaKey == "ArrowLeft") {
         jugador.animate = true
-        jugador.image = jugador.sprites.izquierda
+        ponerDireccionJugador('izquierda')
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
             if (colisionRectangular({ rectangulo1: jugador, rectangulo2: { ...limite, posicion: { x: limite.posicion.x + 3, y: limite.posicion.y } } })) {
@@ -139,7 +137,7 @@ function animate() {
     }
     else if (keys.ArrowRight.presionada && ultimaKey == "ArrowRight") {
         jugador.animate = true
-        jugador.image = jugador.sprites.derecha
+        ponerDireccionJugador('derecha')
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
             if (colisionRectangular({ rectangulo1: jugador, rectangulo2: { ...limite, posicion: { x: limite.posicion.x - 3, y: limite.posicion.y } } })) {
@@ -150,23 +148,7 @@ function animate() {
     }
 }
 
-function irAlLogin(modo = 'login') {
-    if (juegoIniciado) return;
-
-    juegoIniciado = true;
-    const pantallaLogin = `backend/login.html?modo=${encodeURIComponent(modo)}`;
-
-    reproducirGritoGiratina(() => {
-        document.querySelector('#menuInicio').classList.add('ocultar');
-        bajarVolumen(musicaIntro);
-
-        setTimeout(() => {
-            window.location.href = pantallaLogin;
-        }, 1000);
-    });
-}
-
-async function empezarJuegoDesdeLogin() {
+async function empezarJuego() {
     const respuesta = await fetch('backend/session.php');
     const sesion = await respuesta.json();
 
@@ -175,8 +157,13 @@ async function empezarJuegoDesdeLogin() {
         return;
     }
 
+    if (!sesion.personaje) {
+        window.location.href = 'backend/character.html';
+        return;
+    }
+
     juegoIniciado = true;
-    document.querySelector('#menuInicio').style.display = 'none';
+    cambiarSpriteJugador(sesion.personaje);
     document.querySelector('.displayDiv').style.opacity = 0;
 
     cambiarMusicaIntroAMapa();
@@ -187,21 +174,4 @@ async function empezarJuegoDesdeLogin() {
     }, 100);
 }
 
-if (vieneDelLogin) {
-    empezarJuegoDesdeLogin();
-} else {
-    iniciarMusicaIntro();
-}
-
-window.addEventListener('keydown', (e) => {
-    if (e.repeat) return;
-
-    if (e.key.toLowerCase() === 'a') {
-        irAlLogin();
-        return;
-    }
-
-    if (!juegoIniciado) {
-        iniciarMusicaIntro();
-    }
-});
+empezarJuego();

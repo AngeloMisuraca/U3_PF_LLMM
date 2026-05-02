@@ -7,7 +7,7 @@ const desplazamiento = {
     y: -500
 }
 
-// Esta función verifica si dos rectángulos están colisionando (se están tocando o superponiendo)
+// PF3
 function colisionRectangular({ rectangulo1, rectangulo2 }) {
     return (
         rectangulo1.posicion.x + rectangulo1.width >= rectangulo2.posicion.x &&

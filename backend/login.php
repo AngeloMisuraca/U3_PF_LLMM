@@ -16,7 +16,7 @@ if ($username === '' || $password === '') {
 
 try {
   $connection = getDbConnection();
-  $sql = "SELECT id, username, password_hash FROM usuarios WHERE username = ? LIMIT 1";
+  $sql = "SELECT id, username, password, personaje FROM usuarios WHERE username = ? LIMIT 1";
   $statement = $connection->prepare($sql);
   $statement->bind_param("s", $username);
   $statement->execute();
@@ -24,10 +24,11 @@ try {
   $result = $statement->get_result();
   $user = $result->fetch_assoc();
 
-  if ($user && password_verify($password, $user['password_hash'])) {
+  if ($user && $password === $user['password']) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user'] = $user['username'];
-    echo json_encode(["success" => true]);
+    $_SESSION['personaje'] = $user['personaje'];
+    echo json_encode(["success" => true, "personaje" => $user['personaje']]);
   } else {
     echo json_encode(["success" => false, "message" => "Credenciales incorrectas"]);
   }

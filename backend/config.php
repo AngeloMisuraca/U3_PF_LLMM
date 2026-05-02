@@ -24,10 +24,24 @@ function crearTablasSiFaltan(mysqli $connection): void {
       id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
       username VARCHAR(50) NOT NULL UNIQUE,
       email VARCHAR(100) NOT NULL UNIQUE,
-      password_hash VARCHAR(255) NOT NULL,
+      password VARCHAR(255) NOT NULL,
+      personaje VARCHAR(20) DEFAULT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )"
   );
+
+  $passwordResult = $connection->query("SHOW COLUMNS FROM usuarios LIKE 'password'");
+  $passwordHashResult = $connection->query("SHOW COLUMNS FROM usuarios LIKE 'password_hash'");
+
+  if ($passwordResult->num_rows === 0 && $passwordHashResult->num_rows > 0) {
+    $connection->query("ALTER TABLE usuarios CHANGE password_hash password VARCHAR(255) NOT NULL");
+  }
+
+  $result = $connection->query("SHOW COLUMNS FROM usuarios LIKE 'personaje'");
+
+  if ($result->num_rows === 0) {
+    $connection->query("ALTER TABLE usuarios ADD personaje VARCHAR(20) DEFAULT NULL AFTER password");
+  }
 }
 
 function getRequestData(): array {

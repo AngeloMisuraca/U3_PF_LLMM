@@ -3,16 +3,19 @@ musicaCiudad.loop = true;
 musicaCiudad.volume = 0.4;
 
 const musicaIntro = document.querySelector('#musicaIntro');
-musicaIntro.volume = 0.4;
-musicaIntro.loop = true;
-musicaIntro.load();
+
+if (musicaIntro) {
+    musicaIntro.volume = 0.4;
+    musicaIntro.loop = true;
+    musicaIntro.load();
+}
 
 const musicaBatalla = new Audio('./audio/battleSound.mp3');
 musicaBatalla.loop = true;
 musicaBatalla.volume = 0.4;
 
 const gritoGiratina = new Audio('./audio/Grito de Giratina1.mp3');
-gritoGiratina.volume = 0.2;
+gritoGiratina.volume = 0.55;
 gritoGiratina.loop = false;
 gritoGiratina.preload = 'auto';
 let gritoGiratinaReproducido = false;
@@ -26,6 +29,8 @@ const sfx = {
 let audioIniciado = false;
 
 function iniciarMusicaIntro() {
+    if (!musicaIntro) return;
+
     musicaIntro.play().catch(() => {
         console.log('El navegador espera una interaccion para reproducir audio.');
     });
@@ -40,17 +45,28 @@ function reproducirGritoGiratina(alTerminar) {
     gritoGiratinaReproducido = true;
     gritoGiratina.currentTime = 0;
 
-    gritoGiratina.onended = () => {
+    let terminado = false;
+
+    function continuar() {
+        if (terminado) return;
+
+        terminado = true;
         gritoGiratina.onended = null;
         alTerminar();
-    };
+    }
+
+    gritoGiratina.onended = continuar;
+
+    setTimeout(continuar, 2200);
 
     gritoGiratina.play().catch(() => {
-        alTerminar();
+        continuar();
     });
 }
 
 function bajarVolumen(audio) {
+    if (!audio) return;
+
     let volumenActual = audio.volume;
 
     const intervalo = setInterval(() => {
@@ -81,7 +97,10 @@ function subirVolumen(audio) {
 }
 
 function cambiarMusicaIntroAMapa() {
-    bajarVolumen(musicaIntro);
+    if (musicaIntro) {
+        bajarVolumen(musicaIntro);
+    }
+
     subirVolumen(musicaCiudad);
     audioIniciado = true;
 }
@@ -93,3 +112,5 @@ document.querySelectorAll('.footer button').forEach(button => {
         sfx.click.play();
     });
 });
+
+

@@ -32,14 +32,14 @@ try {
     exit;
   }
 
-  $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-  $insertSql = "INSERT INTO usuarios (username, email, password_hash) VALUES (?, ?, ?)";
+  $insertSql = "INSERT INTO usuarios (username, email, password) VALUES (?, ?, ?)";
   $insertStatement = $connection->prepare($insertSql);
-  $insertStatement->bind_param("sss", $username, $email, $passwordHash);
+  $insertStatement->bind_param("sss", $username, $email, $password);
   $insertStatement->execute();
 
   $_SESSION['user_id'] = $connection->insert_id;
   $_SESSION['user'] = $username;
+  unset($_SESSION['personaje']);
 
   $checkStatement->close();
   $insertStatement->close();
@@ -49,3 +49,4 @@ try {
 } catch (Throwable $e) {
   echo json_encode(["success" => false, "message" => "No se pudo registrar el usuario"]);
 }
+

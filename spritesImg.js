@@ -1,5 +1,60 @@
 let jugador, fondo, foreground, battleBackground, charmander, pikachu;
 const renderSprites = [];
+const spritesEntrenadores = {
+    maximo: {
+        arriba: './img/MaximoUp.png',
+        abajo: './img/MaximoDown.png',
+        izquierda: './img/MaximoLeft.png',
+        derecha: './img/MaximoRigth.png'
+    },
+    cynthia: {
+        arriba: './img/cynthia_up.png',
+        abajo: './img/cynthia_down.png',
+        izquierda: './img/cynthia_left.png',
+        derecha: './img/cynthia_rigth.png'
+    }
+};
+
+function crearImagen(ruta) {
+    const image = new Image();
+    image.src = ruta;
+    return image;
+}
+
+function cargarSpritesEntrenador(personaje = 'maximo') {
+    const rutas = spritesEntrenadores[personaje] || spritesEntrenadores.maximo;
+
+    return {
+        arriba: crearImagen(rutas.arriba),
+        abajo: crearImagen(rutas.abajo),
+        izquierda: crearImagen(rutas.izquierda),
+        derecha: crearImagen(rutas.derecha)
+    };
+}
+
+function cambiarSpriteJugador(personaje = 'maximo') {
+    if (!jugador) return;
+
+    const sprites = cargarSpritesEntrenador(personaje);
+    jugador.sprites = sprites;
+    ponerDireccionJugador('abajo');
+    jugador.frames.value = 0;
+}
+
+function ponerDireccionJugador(direccion) {
+    if (!jugador || !jugador.sprites[direccion]) return;
+
+    jugador.image = jugador.sprites[direccion];
+    actualizarDimensionesJugador();
+    jugador.image.onload = actualizarDimensionesJugador;
+}
+
+function actualizarDimensionesJugador() {
+    if (!jugador || !jugador.image.width) return;
+
+    jugador.width = jugador.image.width / jugador.frames.max;
+    jugador.height = jugador.image.height;
+}
 
 function SpriteImages() {
     const image = new Image();
@@ -8,33 +63,18 @@ function SpriteImages() {
     const foregroundImage = new Image();
     foregroundImage.src = './img/foreground.png'
 
-    const playerImgUp = new Image();
-    playerImgUp.src = './img/MaximoUp.png'
-
-    const playerImgDown = new Image();
-    playerImgDown.src = './img/MaximoDown.png'
-
-    const playerImgLeft = new Image();
-    playerImgLeft.src = './img/MaximoLeft.png'
-
-    const playerImgRigth = new Image();
-    playerImgRigth.src = './img/MaximoRigth.png'
+    const spritesJugador = cargarSpritesEntrenador();
 
     jugador = new Sprite({
         posicion: {
             x: canvas.width / 2 - 256 / 4,
             y: canvas.height / 2 - 56 / 2,
         },
-        image: playerImgDown,
+        image: spritesJugador.abajo,
         frames: {
             max: 4
         },
-        sprites: {
-            arriba: playerImgUp,
-            abajo: playerImgDown,
-            izquierda: playerImgLeft,
-            derecha: playerImgRigth,
-        }
+        sprites: spritesJugador
     })
 
     fondo = new Sprite({

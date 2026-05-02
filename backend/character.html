@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegir personaje</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="icon" href="../img/pokeball.gif" type="image/gif">
+</head>
+
+<body>
+    <audio id="musicaLogin" src="../audio/menu sound.mp3" autoplay loop preload="auto"></audio>
+
+    <main class="loginPantalla">
+        <section class="loginCaja seleccionCaja">
+            <div class="perfilEntrenador">
+                <img src="../img/pokeball.gif" alt="Pokeball">
+                <div>
+                    <h1>Elige tu entrenador</h1>
+                    <p>Esta eleccion quedara guardada</p>
+                </div>
+            </div>
+
+            <div class="personajesGrid">
+                <button type="button" class="personajeOpcion" data-personaje="maximo">
+                    <img src="../img/maximo_full.png" alt="Maximo">
+                    <span>Maximo</span>
+                </button>
+
+                <button type="button" class="personajeOpcion" data-personaje="cynthia">
+                    <img src="../img/cynthia_full.png" alt="Cynthia">
+                    <span>Cynthia</span>
+                </button>
+            </div>
+
+            <p id="mensajeLogin"></p>
+        </section>
+    </main>
+
+    <script src="../public/js/character.js"></script>
+</body>
+</html>

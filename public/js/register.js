@@ -19,7 +19,7 @@ formRegistro.addEventListener('submit', async (event) => {
         const datos = await leerRespuestaJson(respuesta);
 
         if (datos.success) {
-            irAlJuego();
+            irAEleccionPersonaje();
         } else {
             mostrarMensaje(datos.message || 'No se pudo crear la cuenta');
         }

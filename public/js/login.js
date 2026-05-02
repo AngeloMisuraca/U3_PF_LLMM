@@ -2,12 +2,12 @@ const musicaLogin = document.querySelector('#musicaLogin');
 const pantallaLogin = document.querySelector('.loginPantalla');
 const formLogin = document.querySelector('#formLogin');
 const mensajeLogin = document.querySelector('#mensajeLogin');
-const rutaLoginXampp = 'http://localhost/Proyecto%20final%202/backend/login.html';
+const rutaLoginXampp = 'http://localhost/Proyecto_final_3/backend/login.html';
 
 function redirigirAXamppSiHaceFalta() {
     const hostCorrecto = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const puertoCorrecto = window.location.port === '' || window.location.port === '80';
-    const rutaCorrecta = decodeURIComponent(window.location.pathname).endsWith('/Proyecto final 2/backend/login.html');
+    const rutaCorrecta = decodeURIComponent(window.location.pathname).endsWith('/Proyecto_final_3/backend/login.html');
 
     if (!hostCorrecto || !puertoCorrecto || !rutaCorrecta) {
         window.location.href = `${rutaLoginXampp}${window.location.search}`;
@@ -31,7 +31,7 @@ async function leerRespuestaJson(respuesta) {
         if (window.location.protocol === 'file:') {
             return {
                 success: false,
-                message: 'Abre el juego desde http://localhost/Proyecto%20final%202/backend/login.html'
+                message: 'Abre el juego desde http://localhost/Proyecto_final_3/backend/login.html'
             };
         }
 
@@ -53,7 +53,16 @@ function irAlJuego() {
     bajarMusicaLogin();
 
     setTimeout(() => {
-        window.location.href = '../index.html?juego=1';
+        window.location.href = '../game.html';
+    }, 800);
+}
+
+function irAEleccionPersonaje() {
+    pantallaLogin.classList.add('saliendo');
+    bajarMusicaLogin();
+
+    setTimeout(() => {
+        window.location.href = 'character.html';
     }, 800);
 }
 
@@ -85,8 +94,10 @@ formLogin.addEventListener('submit', async (event) => {
 
         const datos = await leerRespuestaJson(respuesta);
 
-        if (datos.success) {
+        if (datos.success && datos.personaje) {
             irAlJuego();
+        } else if (datos.success) {
+            irAEleccionPersonaje();
         } else {
             mostrarMensaje(datos.message || 'No se pudo entrar');
         }
@@ -106,3 +117,5 @@ if (modoInicial === 'registro') {
 } else {
     document.querySelector('#loginUsuario').focus();
 }
+
+
