@@ -82,9 +82,16 @@ class Sprite {
         dialogo.style.display = 'block';
 
         if (this.isEnemy) {
-            dialogo.innerHTML = this.name + ' ha muerto!<br>??Has ganado la batalla!';
+            const resultado = typeof registrarVictoriaPikachu === 'function'
+                ? registrarVictoriaPikachu()
+                : { experienciaGanada: 0, subioNivel: false, nivelActual: 25 };
+            const mensajeNivel = resultado.subioNivel
+                ? `<br>Pikachu subio a Lv.${resultado.nivelActual}!`
+                : '';
+
+            dialogo.innerHTML = `${this.name} ha sido debilitado!<br>Has ganado la batalla!<br>+${resultado.experienciaGanada} EXP${mensajeNivel}`;
         } else {
-            dialogo.innerHTML = this.name + ' ha muerto!<br>Has perdido la batalla...';
+            dialogo.innerHTML = this.name + ' ha sido debilitado!<br>Has perdido la batalla...';
         }
 
         gsap.to(this.posicion, {

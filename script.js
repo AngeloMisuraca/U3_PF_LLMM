@@ -52,6 +52,7 @@ function animate() {
                 gsap.set(charmander, { opacity: 1 });
                 gsap.set(pikachu.posicion, { x: 380, y: 490 });
                 gsap.set(charmander.posicion, { x: 788, y: 140 });
+                prepararNuevaBatalla();
 
                 // PF3
                 gsap.to('#overlappingDiv', {

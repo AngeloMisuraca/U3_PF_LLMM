@@ -256,6 +256,12 @@ body {
     margin-top: 6px;
 }
 
+.exp-info {
+    font-size: 9px;
+    margin-top: 8px;
+    text-align: right;
+}
+
 .hidden {
     display: none !important;
 }

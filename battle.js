@@ -6,6 +6,89 @@ const TIEMPO_CONTEO_CAPTURA = 1000;
 const TIEMPO_RESULTADO_BATALLA = 1800;
 const TIEMPO_ENTRE_ATAQUES = 1500;
 const PROBABILIDAD_CAPTURA = 0.45;
+const NIVEL_BASE_PIKACHU = 25;
+const EXP_POR_VICTORIA = 10;
+const EXP_PARA_SUBIR_NIVEL = 20;
+const NIVEL_MIN_RIVAL = 10;
+const NIVEL_MAX_RIVAL = 50;
+
+let estadisticasPikachu = {
+    nivel: NIVEL_BASE_PIKACHU,
+    experiencia: 0
+};
+
+let nivelRivalActual = 23;
+
+function actualizarPanelNiveles() {
+    const nivelPikachu = document.querySelector('#nivelPikachu');
+    const nivelRival = document.querySelector('#nivelRival');
+    const expPikachu = document.querySelector('#EXP_jugador');
+
+    if (nivelPikachu) nivelPikachu.textContent = `Lv.${estadisticasPikachu.nivel}`;
+    if (nivelRival) nivelRival.textContent = `Lv.${nivelRivalActual}`;
+    if (expPikachu) expPikachu.textContent = `EXP ${estadisticasPikachu.experiencia}/${EXP_PARA_SUBIR_NIVEL}`;
+}
+
+function aplicarEstadisticasPikachu(estadisticas = {}) {
+    estadisticasPikachu.nivel = Number(estadisticas.nivel) || NIVEL_BASE_PIKACHU;
+    estadisticasPikachu.experiencia = Number(estadisticas.experiencia) || 0;
+
+    while (estadisticasPikachu.experiencia >= EXP_PARA_SUBIR_NIVEL) {
+        estadisticasPikachu.nivel++;
+        estadisticasPikachu.experiencia -= EXP_PARA_SUBIR_NIVEL;
+    }
+
+    actualizarPanelNiveles();
+}
+
+function obtenerEstadisticasPikachu() {
+    return {
+        nivel: estadisticasPikachu.nivel,
+        experiencia: estadisticasPikachu.experiencia
+    };
+}
+
+function generarNivelRival() {
+    return Math.floor(Math.random() * (NIVEL_MAX_RIVAL - NIVEL_MIN_RIVAL + 1)) + NIVEL_MIN_RIVAL;
+}
+
+function prepararNuevaBatalla() {
+    nivelRivalActual = generarNivelRival();
+    charmander.nivel = nivelRivalActual;
+    battleActivo.victoriaRegistrada = false;
+    actualizarPanelNiveles();
+}
+
+function registrarVictoriaPikachu() {
+    if (!battleActivo.initiated || battleActivo.victoriaRegistrada) {
+        return {
+            experienciaGanada: 0,
+            subioNivel: false,
+            nivelActual: estadisticasPikachu.nivel
+        };
+    }
+
+    battleActivo.victoriaRegistrada = true;
+    estadisticasPikachu.experiencia += EXP_POR_VICTORIA;
+
+    let subioNivel = false;
+
+    while (estadisticasPikachu.experiencia >= EXP_PARA_SUBIR_NIVEL) {
+        estadisticasPikachu.nivel++;
+        estadisticasPikachu.experiencia -= EXP_PARA_SUBIR_NIVEL;
+        subioNivel = true;
+    }
+
+    actualizarPanelNiveles();
+
+    return {
+        experienciaGanada: EXP_POR_VICTORIA,
+        subioNivel,
+        nivelActual: estadisticasPikachu.nivel
+    };
+}
+
+actualizarPanelNiveles();
 
 // PF3
 // PF3
@@ -92,6 +175,7 @@ function intentarCapturarPokemon() {
 
     const pokemonCapturado = {
         nombre: charmander.name,
+        nivel: charmander.nivel || nivelRivalActual,
         fecha: new Date().toISOString()
     };
     const intentosHastaResultado = Math.random() < PROBABILIDAD_CAPTURA
@@ -221,7 +305,7 @@ function attack(attacker, { attack, recipient, renderSprites }) {
 
     // PF3
     document.querySelector('#dialogoBox').style.display = 'block'
-    document.querySelector('#dialogoBox').innerHTML = attacker.name + ' us?? ' + attack.name;
+    document.querySelector('#dialogoBox').innerHTML = attacker.name + ' usó ' + attack.name;
     const timeLine = gsap.timeline();
 
     // PF3
@@ -463,7 +547,7 @@ function attack(attacker, { attack, recipient, renderSprites }) {
 }
 
 // PF3
-const battleActivo = { initiated: false }
+const battleActivo = { initiated: false, victoriaRegistrada: false }
 
 // PF3
 // PF3

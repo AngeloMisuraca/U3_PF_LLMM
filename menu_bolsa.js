@@ -79,8 +79,10 @@ function crearEstadoPartida() {
         batalla: {
             activa: battleActivo.initiated,
             pikachuVida: pikachu.health,
-            rivalVida: charmander.health
+            rivalVida: charmander.health,
+            rivalNivel: charmander.nivel || nivelRivalActual
         },
+        pokemonPrincipal: obtenerEstadisticasPikachu(),
         pokemonesCapturados: obtenerPokemonesCapturados()
     };
 }
@@ -113,9 +115,13 @@ function aplicarEstadoPartida(estado) {
     if (estado.batalla) {
         pikachu.health = estado.batalla.pikachuVida ?? 100;
         charmander.health = estado.batalla.rivalVida ?? 100;
+        nivelRivalActual = estado.batalla.rivalNivel ?? nivelRivalActual;
+        charmander.nivel = nivelRivalActual;
         document.querySelector('#HP_jugador .hp-fill').style.width = pikachu.health + '%';
         document.querySelector('#HP_rival .hp-fill').style.width = charmander.health + '%';
     }
+
+    aplicarEstadisticasPikachu(estado.pokemonPrincipal);
 
     if (Array.isArray(estado.pokemonesCapturados)) {
         guardarPokemonesCapturados(estado.pokemonesCapturados);
@@ -126,6 +132,10 @@ function reanudarBatallaGuardada(estado) {
     if (!estado || !estado.batalla || !estado.batalla.activa) return false;
 
     battleActivo.initiated = true;
+    battleActivo.victoriaRegistrada = false;
+    nivelRivalActual = estado.batalla.rivalNivel ?? nivelRivalActual;
+    charmander.nivel = nivelRivalActual;
+    actualizarPanelNiveles();
 
     gsap.set(pikachu, { opacity: 1 });
     gsap.set(charmander, { opacity: 1 });
@@ -174,7 +184,12 @@ function renderListaCapturados() {
 
     return `
         <ul class="menu-bolsa-lista">
-            ${capturados.map((pokemon) => `<li>${limpiarTexto(pokemon.nombre || pokemon)}</li>`).join('')}
+            ${capturados.map((pokemon) => {
+                const nombre = limpiarTexto(pokemon.nombre || pokemon);
+                const nivel = pokemon.nivel ? ` - Lv.${limpiarTexto(pokemon.nivel)}` : '';
+
+                return `<li>${nombre}${nivel}</li>`;
+            }).join('')}
         </ul>
     `;
 }

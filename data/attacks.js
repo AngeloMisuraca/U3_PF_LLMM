@@ -24,6 +24,7 @@ const ataquesCharmander = {
     },
     collejon: {
         name: 'collejon',
-        damage: 80
+        damage: 30
     },
 };
+
