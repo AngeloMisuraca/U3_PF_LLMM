@@ -20,6 +20,8 @@ let ultimaKey = "";
 
 
 window.addEventListener('keydown', (e) => {
+    if (menuBolsaAbierto && e.key !== 'Enter' && e.key !== 'Escape') return;
+
     switch (e.key) {
         case 'ArrowUp':
             keys.ArrowUp.presionada = true;
@@ -44,6 +46,8 @@ window.addEventListener('keydown', (e) => {
 })
 
 window.addEventListener('keyup', (e) => {
+    if (menuBolsaAbierto && e.key !== 'Enter' && e.key !== 'Escape') return;
+
     switch (e.key) {
         case 'ArrowUp':
             keys.ArrowUp.presionada = false;

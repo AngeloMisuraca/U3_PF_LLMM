@@ -22,6 +22,8 @@ function animate() {
     // PF3
     if (battleActivo.initiated) return
 
+    if (menuBolsaAbierto) return
+
     if (keys.ArrowUp.presionada || keys.ArrowDown.presionada || keys.ArrowLeft.presionada || keys.ArrowRight.presionada) {
         for (let i = 0; i < battleZones.length; i++) {
             const battlezone = battleZones[i];
@@ -64,7 +66,7 @@ function animate() {
                             onComplete() {
                                 document.querySelector('.battle-ui').style.display = 'block';
                                 document.querySelector('.footer').style.display = 'grid';
-                                document.querySelector('#dialogoBox').style.display = 'none';
+                                iniciarInterfazBatalla();
 
                                 animateBattle();
 
@@ -162,12 +164,22 @@ async function empezarJuego() {
         return;
     }
 
+    estadoGuardado = prepararGuardadoPartida(sesion.user_id || sesion.user);
     juegoIniciado = true;
     cambiarSpriteJugador(sesion.personaje);
+
+    if (estadoGuardado) {
+        aplicarEstadoPartida(estadoGuardado);
+    }
+
     document.querySelector('.displayDiv').style.opacity = 0;
 
-    cambiarMusicaIntroAMapa();
-    animate();
+    if (reanudarBatallaGuardada(estadoGuardado)) {
+        if (musicaIntro) musicaIntro.pause();
+    } else {
+        cambiarMusicaIntroAMapa();
+        animate();
+    }
 
     setTimeout(() => {
         document.querySelector('.displayDiv').style.opacity = 1;

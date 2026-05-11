@@ -15,10 +15,19 @@
         <canvas></canvas>
 
         <div class="footer">
-            <button>Tackle</button>
-            <button>Ataque_Rapido</button>
-            <button>Trueno</button>
-            <button>Tacleada_de_Voltios</button>
+            <div id="menuAccionesBatalla" class="battle-menu">
+                <p class="battle-pregunta">Que quieres hacer?</p>
+                <button type="button" id="botonMostrarAtaques">Atacar</button>
+                <button type="button" id="botonCapturarPokemon">Capturar</button>
+                <button type="button" id="botonHuirBatalla">Huir</button>
+            </div>
+            <div id="menuAtaquesBatalla" class="battle-menu ataques hidden">
+                <p class="battle-pregunta">Elige un ataque</p>
+                <button type="button" data-ataque="Tackle">Tackle</button>
+                <button type="button" data-ataque="Ataque_Rapido">Ataque_Rapido</button>
+                <button type="button" data-ataque="Trueno">Trueno</button>
+                <button type="button" data-ataque="Tacleada_de_Voltios">Tacleada_de_Voltios</button>
+            </div>
             <div id="dialogoBox"></div>
         </div>
 
@@ -51,6 +60,14 @@
                 </div>
             </div>
         </div>
+
+        <div id="menuBolsa" class="menu-bolsa">
+            <div class="menu-bolsa-opciones">
+                <button type="button" data-menu-opcion="guardar" class="activo">Guardar</button>
+                <button type="button" data-menu-opcion="capturados">Pokemones capturados</button>
+            </div>
+            <div id="menuBolsaContenido" class="menu-bolsa-contenido"></div>
+        </div>
     </div>
 </body>
 
@@ -66,6 +83,7 @@
 <script src="musica.js"></script>
 <script src="spritesImg.js"></script>
 <script src="mapeo.js"></script>
+<script src="menu_bolsa.js"></script>
 <script src="movilidad.js"></script>
 <script src="script.js"></script>
 </html>

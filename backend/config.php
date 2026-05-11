@@ -6,6 +6,11 @@ function getDbConnection(): mysqli {
   $dbUser = "root";
   $dbPassword = "";
 
+  // $host = "sql101.infinityfree.com";
+  // $dbName = "if0_41887200_pokemon_daw";
+  // $dbUser = "if0_41887200";
+  // $dbPassword = "iBcXMqlKPm3";
+
   mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
   $connection = new mysqli($host, $dbUser, $dbPassword);

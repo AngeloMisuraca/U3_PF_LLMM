@@ -1,6 +1,11 @@
 // PF3
 // PF3
 let battleAnimationID;
+let accionBatallaEnProgreso = false;
+const TIEMPO_CONTEO_CAPTURA = 1000;
+const TIEMPO_RESULTADO_BATALLA = 1800;
+const TIEMPO_ENTRE_ATAQUES = 1500;
+const PROBABILIDAD_CAPTURA = 0.45;
 
 // PF3
 // PF3
@@ -23,31 +28,189 @@ function animateBattle() {
 // PF3
 // PF3
 // PF3
-document.querySelectorAll('.footer button').forEach((button) => {
-    button.addEventListener('click', (e) => {
-        if (!battleActivo.initiated) return;
+function mostrarDialogoBatalla(mensaje) {
+    const dialogo = document.querySelector('#dialogoBox');
+    dialogo.style.display = 'block';
+    dialogo.style.pointerEvents = accionBatallaEnProgreso ? 'none' : 'auto';
+    dialogo.innerHTML = mensaje;
+}
 
-        const attackKey = e.currentTarget.innerHTML.trim();
-        const selectedattack = tackles[attackKey];
+function mostrarMenuPrincipalBatalla() {
+    const dialogo = document.querySelector('#dialogoBox');
+    dialogo.style.display = 'none';
+    dialogo.style.pointerEvents = 'none';
+    document.querySelector('#menuAccionesBatalla').classList.remove('hidden');
+    document.querySelector('#menuAtaquesBatalla').classList.add('hidden');
+}
 
-        if (selectedattack) {
-            pikachu.attack({
-                attack: selectedattack,
-                recipient: charmander,
-                renderSprites,
-            });
-        }
+function mostrarMenuAtaquesBatalla() {
+    if (accionBatallaEnProgreso) return;
 
-        // PF3
-        if (charmander.health <= 0) {
-            charmander.faint();
-        }
+    const dialogo = document.querySelector('#dialogoBox');
+    dialogo.style.display = 'none';
+    dialogo.style.pointerEvents = 'none';
+    document.querySelector('#menuAccionesBatalla').classList.add('hidden');
+    document.querySelector('#menuAtaquesBatalla').classList.remove('hidden');
+}
 
-        // PF3
-        if (pikachu.health <= 0) {
-            pikachu.faint();
-        }
+function crearConteoCapturaHTML(intentoActual) {
+    const pasos = [1, 2, 3, 4].map((paso) => {
+        const clase = paso === intentoActual ? 'activo' : paso < intentoActual ? 'completado' : '';
+        return `<span class="${clase}">${paso}</span>`;
+    }).join('');
+
+    return `
+        <div class="captura-dialogo">
+            <p>Lanzaste una Pokeball...</p>
+            <div class="captura-conteo">${pasos}</div>
+        </div>
+    `;
+}
+
+function activarBotonesBatalla(activos) {
+    document.querySelectorAll('.footer button').forEach((button) => {
+        button.disabled = !activos;
     });
+}
+
+function finalizarAccionBatalla() {
+    accionBatallaEnProgreso = false;
+    activarBotonesBatalla(true);
+    mostrarMenuPrincipalBatalla();
+}
+
+function iniciarInterfazBatalla() {
+    finalizarAccionBatalla();
+}
+
+function intentarCapturarPokemon() {
+    if (!battleActivo.initiated || accionBatallaEnProgreso) return;
+
+    accionBatallaEnProgreso = true;
+    activarBotonesBatalla(false);
+    mostrarMenuPrincipalBatalla();
+
+    const pokemonCapturado = {
+        nombre: charmander.name,
+        fecha: new Date().toISOString()
+    };
+    const intentosHastaResultado = Math.random() < PROBABILIDAD_CAPTURA
+        ? 4
+        : Math.floor(Math.random() * 3) + 1;
+    let intentoActual = 1;
+
+    function mostrarIntento() {
+        mostrarDialogoBatalla(crearConteoCapturaHTML(intentoActual));
+
+        if (intentoActual === intentosHastaResultado) {
+            setTimeout(() => {
+                if (intentosHastaResultado === 4) {
+                    agregarPokemonCapturado(pokemonCapturado);
+                    mostrarDialogoBatalla(`<div class="captura-dialogo"><p>${charmander.name} ha sido capturado!</p></div>`);
+                    gsap.to(charmander, { opacity: 0, duration: 0.5 });
+
+                    setTimeout(() => {
+                        accionBatallaEnProgreso = false;
+                        finalizarCombate();
+                    }, TIEMPO_RESULTADO_BATALLA);
+                    return;
+                }
+
+                mostrarDialogoBatalla(`<div class="captura-dialogo"><p>${charmander.name} se ha escapado de la captura!</p></div>`);
+
+                setTimeout(() => {
+                    if (!battleActivo.initiated || charmander.health <= 0 || pikachu.health <= 0) {
+                        finalizarAccionBatalla();
+                        return;
+                    }
+
+                    const nombresAtaques = Object.keys(ataquesCharmander);
+                    const nombreAleatorio = nombresAtaques[Math.floor(Math.random() * nombresAtaques.length)];
+                    const ataqueSeleccionado = ataquesCharmander[nombreAleatorio];
+
+                    charmander.attack({
+                        attack: ataqueSeleccionado,
+                        recipient: pikachu,
+                        renderSprites,
+                    });
+                }, TIEMPO_RESULTADO_BATALLA);
+            }, TIEMPO_CONTEO_CAPTURA);
+            return;
+        }
+
+        intentoActual++;
+        setTimeout(mostrarIntento, TIEMPO_CONTEO_CAPTURA);
+    }
+
+    mostrarIntento();
+}
+
+function huirBatalla() {
+    if (!battleActivo.initiated || accionBatallaEnProgreso) return;
+
+    accionBatallaEnProgreso = true;
+    activarBotonesBatalla(false);
+    mostrarMenuPrincipalBatalla();
+    mostrarDialogoBatalla('<div class="captura-dialogo"><p>Has huido de la batalla.</p></div>');
+
+    setTimeout(() => {
+        accionBatallaEnProgreso = false;
+        finalizarCombate();
+    }, TIEMPO_RESULTADO_BATALLA);
+}
+
+function seleccionarAtaque(button) {
+    if (!battleActivo.initiated || accionBatallaEnProgreso) return;
+
+    const attackKey = button.dataset.ataque;
+    const selectedattack = tackles[attackKey];
+
+    if (selectedattack) {
+        accionBatallaEnProgreso = true;
+        activarBotonesBatalla(false);
+        mostrarMenuPrincipalBatalla();
+
+        pikachu.attack({
+            attack: selectedattack,
+            recipient: charmander,
+            renderSprites,
+        });
+    }
+
+    // PF3
+    if (charmander.health <= 0) {
+        charmander.faint();
+    }
+
+    // PF3
+    if (pikachu.health <= 0) {
+        pikachu.faint();
+    }
+}
+
+document.querySelector('.footer').addEventListener('click', (event) => {
+    const boton = event.target.closest('button');
+
+    if (!boton || boton.disabled) return;
+
+    if (boton.id === 'botonMostrarAtaques') {
+        mostrarMenuAtaquesBatalla();
+        return;
+    }
+
+    if (boton.id === 'botonCapturarPokemon') {
+        intentarCapturarPokemon();
+        return;
+    }
+
+    if (boton.id === 'botonHuirBatalla') {
+        huirBatalla();
+        return;
+    }
+
+    if (boton.dataset.ataque) {
+        seleccionarAtaque(boton);
+    }
 });
 
 // PF3
@@ -111,7 +274,12 @@ function attack(attacker, { attack, recipient, renderSprites }) {
                     recipient: attacker,
                     renderSprites,
                 });
-            }, 600);
+            }, TIEMPO_ENTRE_ATAQUES);
+            return;
+        }
+
+        if (attacker.isEnemy && battleActivo.initiated && attacker.health > 0 && recipient.health > 0) {
+            setTimeout(finalizarAccionBatalla, TIEMPO_RESULTADO_BATALLA);
         }
     };
 
@@ -304,6 +472,8 @@ let battleCooldown = false;
 // PF3
 
 document.querySelector('#dialogoBox').addEventListener('click', (event) => {
+    if (accionBatallaEnProgreso) return;
+
     event.currentTarget.style.display = 'none';
 })
 
@@ -315,6 +485,9 @@ function finalizarCombate() {
     document.querySelector('.battle-ui').style.display = 'none';
     document.querySelector('.footer').style.display = 'none';
     document.querySelector('#dialogoBox').style.display = 'none';
+    document.querySelector('#dialogoBox').style.pointerEvents = 'none';
+    activarBotonesBatalla(true);
+    accionBatallaEnProgreso = false;
     battleActivo.initiated = false;
     animate();
 }
@@ -323,3 +496,4 @@ function finalizarCombate() {
 document.querySelector('.battle-ui').style.display = 'none';
 document.querySelector('.footer').style.display = 'none';
 document.querySelector('#dialogoBox').style.display = 'none';
+document.querySelector('#dialogoBox').style.pointerEvents = 'none';

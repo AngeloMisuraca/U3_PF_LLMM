@@ -101,7 +101,7 @@ class Sprite {
 
         setTimeout(() => {
             finalizarCombate();
-        }, 2300);
+        }, 3500);
     }
 
     

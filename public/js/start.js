@@ -20,7 +20,7 @@ iniciarMusicaIntro();
 window.addEventListener('keydown', (event) => {
     if (event.repeat) return;
 
-    if (event.key.toLowerCase() === 'a') {
+    if (event.key.toLowerCase() === 'a' || event.key === 'Enter' || event.key === ' ') {
         irAlLogin();
         return;
     }
@@ -29,3 +29,5 @@ window.addEventListener('keydown', (event) => {
         iniciarMusicaIntro();
     }
 });
+
+window.addEventListener('click', irAlLogin);
