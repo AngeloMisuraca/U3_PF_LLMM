@@ -8,10 +8,10 @@ const spritesEntrenadores = {
         derecha: './img/MaximoRigth.png'
     },
     cynthia: {
-        arriba: './img/cynthia_up.png',
-        abajo: './img/cynthia_down.png',
-        izquierda: './img/cynthia_left.png',
-        derecha: './img/cynthia_rigth.png'
+        arriba: './img/cynthia_up_fixed.png',
+        abajo: './img/cynthia_down_fixed.png',
+        izquierda: './img/cynthia_left_fixed.png',
+        derecha: './img/cynthia_rigth_fixed.png'
     }
 };
 
