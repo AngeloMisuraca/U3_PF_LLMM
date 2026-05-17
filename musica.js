@@ -28,8 +28,11 @@ const sfx = {
 
 let audioIniciado = false;
 
+// Gestiona la musica principal y los efectos del juego.
 function iniciarMusicaIntro() {
-    if (!musicaIntro) return;
+    if (!musicaIntro) {
+        return;
+    }
 
     musicaIntro.play().catch(() => {
         console.log('El navegador espera una interaccion para reproducir audio.');
@@ -48,7 +51,9 @@ function reproducirGritoGiratina(alTerminar) {
     let terminado = false;
 
     function continuar() {
-        if (terminado) return;
+        if (terminado) {
+            return;
+        }
 
         terminado = true;
         gritoGiratina.onended = null;
@@ -65,7 +70,9 @@ function reproducirGritoGiratina(alTerminar) {
 }
 
 function bajarVolumen(audio) {
-    if (!audio) return;
+    if (!audio) {
+        return;
+    }
 
     let volumenActual = audio.volume;
 
@@ -105,12 +112,9 @@ function cambiarMusicaIntroAMapa() {
     audioIniciado = true;
 }
 
-
 document.querySelectorAll('.footer button').forEach(button => {
     button.addEventListener('click', () => {
         sfx.click.currentTime = 0;
         sfx.click.play();
     });
 });
-
-

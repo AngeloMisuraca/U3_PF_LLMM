@@ -1,7 +1,10 @@
 let portadaIniciada = false;
 
+// Abre la pantalla de login desde la portada.
 function irAlLogin() {
-    if (portadaIniciada) return;
+    if (portadaIniciada) {
+        return;
+    }
 
     portadaIniciada = true;
 
@@ -18,7 +21,9 @@ function irAlLogin() {
 iniciarMusicaIntro();
 
 window.addEventListener('keydown', (event) => {
-    if (event.repeat) return;
+    if (event.repeat) {
+        return;
+    }
 
     if (event.key.toLowerCase() === 'a' || event.key === 'Enter' || event.key === ' ') {
         irAlLogin();

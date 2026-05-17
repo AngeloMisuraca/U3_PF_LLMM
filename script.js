@@ -4,6 +4,7 @@ mapeo();
 
 let juegoIniciado = false;
 
+// Ejecuta el mapa principal y el movimiento del jugador.
 function animate() {
     const animationID = window.requestAnimationFrame(animate);
     fondo.draw();
@@ -19,10 +20,13 @@ function animate() {
     let moving = true;
     jugador.animate = false;
 
-    // PF3
-    if (battleActivo.initiated) return
+    if (battleActivo.initiated) {
+        return;
+    }
 
-    if (menuBolsaAbierto) return
+    if (menuBolsaAbierto) {
+        return;
+    }
 
     if (keys.ArrowUp.presionada || keys.ArrowDown.presionada || keys.ArrowLeft.presionada || keys.ArrowRight.presionada) {
         for (let i = 0; i < battleZones.length; i++) {
@@ -33,15 +37,13 @@ function animate() {
                 rectangulo2: battlezone
             }) && Math.random() < 0.002
             ) {
-                // PF3
-                window.cancelAnimationFrame(animationID)
+                window.cancelAnimationFrame(animationID);
 
-                // PF3
                 musicaCiudad.pause();
                 musicaBatalla.currentTime = 10;
                 musicaBatalla.play();
 
-                battleActivo.initiated = true
+                battleActivo.initiated = true;
 
                 pikachu.health = 100;
                 charmander.health = 100;
@@ -54,15 +56,14 @@ function animate() {
                 gsap.set(charmander.posicion, { x: 788, y: 140 });
                 prepararNuevaBatalla();
 
-                // PF3
                 gsap.to('#overlappingDiv', {
                     opacity: 1,
                     repeat: 3,
-                    yoyo: true, // PF3
+                    yoyo: true,
                     duration: 0.5,
                     onComplete() {
                         gsap.to('#overlappingDiv', {
-                            opacity: 1, 
+                            opacity: 1,
                             duration: 0.5,
                             onComplete() {
                                 document.querySelector('.battle-ui').style.display = 'block';
@@ -71,15 +72,14 @@ function animate() {
 
                                 animateBattle();
 
-                                // PF3
                                 gsap.to('#overlappingDiv', {
                                     opacity: 0,
                                     duration: 0.5
-                                })
+                                });
                             }
-                        })
+                        });
                     }
-                })
+                });
                 break;
             }
         }
@@ -90,64 +90,78 @@ function animate() {
     if (keys.Space.presionada) {
         velocidad = 8;
         jugador.animSpeed = 3;
-
     } else {
         velocidad = 3;
         jugador.animSpeed = 10;
-
     }
 
     if (keys.ArrowUp.presionada && ultimaKey === "ArrowUp") {
-        // PF3
-        jugador.animate = true
-        ponerDireccionJugador('arriba')
+        jugador.animate = true;
+        ponerDireccionJugador('arriba');
 
-        // PF3
-        // PF3
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
-            
+
             if (colisionRectangular({ rectangulo1: jugador, rectangulo2: { ...limite, posicion: { x: limite.posicion.x, y: limite.posicion.y + 3 } } })) {
-                // PF3
-                moving = false; break;
+                moving = false;
+                break;
             }
         }
-        // PF3
-        if (moving) simboloMovible.forEach(Movibles => { Movibles.posicion.y += velocidad })
-    }
-    else if (keys.ArrowDown.presionada && ultimaKey == "ArrowDown") {
-        jugador.animate = true
-        ponerDireccionJugador('abajo')
+
+        if (moving) {
+            simboloMovible.forEach(Movibles => {
+                Movibles.posicion.y += velocidad;
+            });
+        }
+    } else if (keys.ArrowDown.presionada && ultimaKey == "ArrowDown") {
+        jugador.animate = true;
+        ponerDireccionJugador('abajo');
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
 
             if (colisionRectangular({ rectangulo1: jugador, rectangulo2: { ...limite, posicion: { x: limite.posicion.x, y: limite.posicion.y - 3 } } })) {
-                moving = false; break;
+                moving = false;
+                break;
             }
         }
-        if (moving) simboloMovible.forEach(Movibles => { Movibles.posicion.y -= velocidad })
-    }
-    else if (keys.ArrowLeft.presionada && ultimaKey == "ArrowLeft") {
-        jugador.animate = true
-        ponerDireccionJugador('izquierda')
+
+        if (moving) {
+            simboloMovible.forEach(Movibles => {
+                Movibles.posicion.y -= velocidad;
+            });
+        }
+    } else if (keys.ArrowLeft.presionada && ultimaKey == "ArrowLeft") {
+        jugador.animate = true;
+        ponerDireccionJugador('izquierda');
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
             if (colisionRectangular({ rectangulo1: jugador, rectangulo2: { ...limite, posicion: { x: limite.posicion.x + 3, y: limite.posicion.y } } })) {
-                moving = false; break;
+                moving = false;
+                break;
             }
         }
-        if (moving) simboloMovible.forEach(Movibles => { Movibles.posicion.x += velocidad })
-    }
-    else if (keys.ArrowRight.presionada && ultimaKey == "ArrowRight") {
-        jugador.animate = true
-        ponerDireccionJugador('derecha')
+
+        if (moving) {
+            simboloMovible.forEach(Movibles => {
+                Movibles.posicion.x += velocidad;
+            });
+        }
+    } else if (keys.ArrowRight.presionada && ultimaKey == "ArrowRight") {
+        jugador.animate = true;
+        ponerDireccionJugador('derecha');
         for (let i = 0; i < limites.length; i++) {
             const limite = limites[i];
             if (colisionRectangular({ rectangulo1: jugador, rectangulo2: { ...limite, posicion: { x: limite.posicion.x - 3, y: limite.posicion.y } } })) {
-                moving = false; break;
+                moving = false;
+                break;
             }
         }
-        if (moving) simboloMovible.forEach(Movibles => { Movibles.posicion.x -= velocidad })
+
+        if (moving) {
+            simboloMovible.forEach(Movibles => {
+                Movibles.posicion.x -= velocidad;
+            });
+        }
     }
 }
 
@@ -165,7 +179,7 @@ async function empezarJuego() {
         return;
     }
 
-    estadoGuardado = prepararGuardadoPartida(sesion.user_id || sesion.user);
+    estadoGuardado = await prepararGuardadoPartida(sesion.user_id || sesion.user);
     juegoIniciado = true;
     cambiarSpriteJugador(sesion.personaje);
 
@@ -176,7 +190,9 @@ async function empezarJuego() {
     document.querySelector('.displayDiv').style.opacity = 0;
 
     if (reanudarBatallaGuardada(estadoGuardado)) {
-        if (musicaIntro) musicaIntro.pause();
+        if (musicaIntro) {
+            musicaIntro.pause();
+        }
     } else {
         cambiarMusicaIntroAMapa();
         animate();

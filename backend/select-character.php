@@ -10,7 +10,13 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $data = getRequestData();
-$personaje = strtolower(trim($data['personaje'] ?? ''));
+
+// Valida que el personaje solicitado sea uno de los disponibles.
+$personaje = "";
+if (isset($data['personaje'])) {
+  $personaje = strtolower(trim($data['personaje']));
+}
+
 $personajesPermitidos = ["maximo", "cynthia"];
 
 if (!in_array($personaje, $personajesPermitidos, true)) {
@@ -20,6 +26,8 @@ if (!in_array($personaje, $personajesPermitidos, true)) {
 
 try {
   $connection = getDbConnection();
+
+  // Persiste la eleccion para que el juego cargue el sprite correcto.
   $sql = "UPDATE usuarios SET personaje = ? WHERE id = ?";
   $statement = $connection->prepare($sql);
   $statement->bind_param("si", $personaje, $_SESSION['user_id']);

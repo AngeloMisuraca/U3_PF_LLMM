@@ -1,5 +1,4 @@
-// PF3
-// PF3
+// Gestiona combates, capturas y experiencia.
 let battleAnimationID;
 let accionBatallaEnProgreso = false;
 const TIEMPO_CONTEO_CAPTURA = 1000;
@@ -7,7 +6,7 @@ const TIEMPO_RESULTADO_BATALLA = 1800;
 const TIEMPO_ENTRE_ATAQUES = 1500;
 const PROBABILIDAD_CAPTURA = 0.45;
 const NIVEL_BASE_PIKACHU = 25;
-const EXP_POR_VICTORIA = 10;
+const EXP_POR_VICTORIA = 20;
 const EXP_PARA_SUBIR_NIVEL = 20;
 const NIVEL_MIN_RIVAL = 10;
 const NIVEL_MAX_RIVAL = 50;
@@ -24,9 +23,17 @@ function actualizarPanelNiveles() {
     const nivelRival = document.querySelector('#nivelRival');
     const expPikachu = document.querySelector('#EXP_jugador');
 
-    if (nivelPikachu) nivelPikachu.textContent = `Lv.${estadisticasPikachu.nivel}`;
-    if (nivelRival) nivelRival.textContent = `Lv.${nivelRivalActual}`;
-    if (expPikachu) expPikachu.textContent = `EXP ${estadisticasPikachu.experiencia}/${EXP_PARA_SUBIR_NIVEL}`;
+    if (nivelPikachu) {
+        nivelPikachu.textContent = `Lv.${estadisticasPikachu.nivel}`;
+    }
+
+    if (nivelRival) {
+        nivelRival.textContent = `Lv.${nivelRivalActual}`;
+    }
+
+    if (expPikachu) {
+        expPikachu.textContent = `EXP ${estadisticasPikachu.experiencia}/${EXP_PARA_SUBIR_NIVEL}`;
+    }
 }
 
 function aplicarEstadisticasPikachu(estadisticas = {}) {
@@ -90,27 +97,16 @@ function registrarVictoriaPikachu() {
 
 actualizarPanelNiveles();
 
-// PF3
-// PF3
-// PF3
 function animateBattle() {
     battleAnimationID = window.requestAnimationFrame(animateBattle);
     battleBackground.draw();
     charmander.draw();
     pikachu.draw();
-
-    // PF3
-    // PF3
     renderSprites.forEach((Sprite) => {
         Sprite.draw();
     });
 }
 
-// PF3
-// PF3
-// PF3
-// PF3
-// PF3
 function mostrarDialogoBatalla(mensaje) {
     const dialogo = document.querySelector('#dialogoBox');
     dialogo.style.display = 'block';
@@ -127,7 +123,9 @@ function mostrarMenuPrincipalBatalla() {
 }
 
 function mostrarMenuAtaquesBatalla() {
-    if (accionBatallaEnProgreso) return;
+    if (accionBatallaEnProgreso) {
+        return;
+    }
 
     const dialogo = document.querySelector('#dialogoBox');
     dialogo.style.display = 'none';
@@ -167,7 +165,9 @@ function iniciarInterfazBatalla() {
 }
 
 function intentarCapturarPokemon() {
-    if (!battleActivo.initiated || accionBatallaEnProgreso) return;
+    if (!battleActivo.initiated || accionBatallaEnProgreso) {
+        return;
+    }
 
     accionBatallaEnProgreso = true;
     activarBotonesBatalla(false);
@@ -230,7 +230,9 @@ function intentarCapturarPokemon() {
 }
 
 function huirBatalla() {
-    if (!battleActivo.initiated || accionBatallaEnProgreso) return;
+    if (!battleActivo.initiated || accionBatallaEnProgreso) {
+        return;
+    }
 
     accionBatallaEnProgreso = true;
     activarBotonesBatalla(false);
@@ -244,7 +246,9 @@ function huirBatalla() {
 }
 
 function seleccionarAtaque(button) {
-    if (!battleActivo.initiated || accionBatallaEnProgreso) return;
+    if (!battleActivo.initiated || accionBatallaEnProgreso) {
+        return;
+    }
 
     const attackKey = button.dataset.ataque;
     const selectedattack = tackles[attackKey];
@@ -260,13 +264,9 @@ function seleccionarAtaque(button) {
             renderSprites,
         });
     }
-
-    // PF3
     if (charmander.health <= 0) {
         charmander.faint();
     }
-
-    // PF3
     if (pikachu.health <= 0) {
         pikachu.faint();
     }
@@ -275,7 +275,9 @@ function seleccionarAtaque(button) {
 document.querySelector('.footer').addEventListener('click', (event) => {
     const boton = event.target.closest('button');
 
-    if (!boton || boton.disabled) return;
+    if (!boton || boton.disabled) {
+        return;
+    }
 
     if (boton.id === 'botonMostrarAtaques') {
         mostrarMenuAtaquesBatalla();
@@ -296,20 +298,10 @@ document.querySelector('.footer').addEventListener('click', (event) => {
         seleccionarAtaque(boton);
     }
 });
-
-// PF3
-// PF3
-// PF3
-// PF3
 function attack(attacker, { attack, recipient, renderSprites }) {
-
-    // PF3
-    document.querySelector('#dialogoBox').style.display = 'block'
-    document.querySelector('#dialogoBox').innerHTML = attacker.name + ' usó ' + attack.name;
+    document.querySelector('#dialogoBox').style.display = 'block';
+    document.querySelector('#dialogoBox').innerHTML = attacker.name + ' uso ' + attack.name;
     const timeLine = gsap.timeline();
-
-    // PF3
-    // PF3
     if (attack.name === 'Trueno' || attack.name === 'Tacleada_de_Voltios') {
         sfx.rayo.currentTime = 0;
         sfx.rayo.play();
@@ -317,35 +309,22 @@ function attack(attacker, { attack, recipient, renderSprites }) {
         sfx.golpe.currentTime = 0;
         sfx.golpe.play();
     }
-
-    // PF3
-    // PF3
     setTimeout(() => {
         sfx.rayo.pause();
         sfx.rayo.currentTime = 0;
     }, 1000);
-
-    // PF3
-    // PF3
     let healthBar;
     if (attacker.isEnemy) {
         healthBar = '#HP_jugador .hp-fill';
     } else {
         healthBar = '#HP_rival .hp-fill';
     }
-
-    // PF3
-    // PF3
     let movementDistance;
     if (attacker.isEnemy) {
         movementDistance = -20;
     } else {
         movementDistance = 20;
     }
-
-    // PF3
-    // PF3
-    // PF3
     const alTerminarAtaque = () => {
         if (!attacker.isEnemy && recipient.health > 0) {
             const nombresAtaques = Object.keys(ataquesCharmander);
@@ -366,15 +345,7 @@ function attack(attacker, { attack, recipient, renderSprites }) {
             setTimeout(finalizarAccionBatalla, TIEMPO_RESULTADO_BATALLA);
         }
     };
-
-    // PF3
-    // PF3
-    // PF3
     switch (attack.name) {
-
-        // PF3
-        // PF3
-        // PF3
         case 'Tacleada_de_Voltios':
             const voltioImage = new Image();
             const voltio = new Sprite({
@@ -393,31 +364,25 @@ function attack(attacker, { attack, recipient, renderSprites }) {
             };
             voltioImage.src = './img/voltio.png';
             renderSprites.push(voltio);
-
-            // PF3
             gsap.to(voltio.posicion, {
                 duration: 0.6,
                 onComplete: () => renderSprites.splice(renderSprites.indexOf(voltio), 1)
             });
-
-            // PF3
-            // PF3
             timeLine.to(attacker.posicion, { x: attacker.posicion.x - movementDistance, duration: 0.1 })
                 .to(attacker.posicion, {
                     x: attacker.posicion.x + movementDistance * 2,
                     duration: 0.05,
                     onComplete: () => {
                         const sigueVivo = attacker.applyDamage(recipient, attack, healthBar);
-                        if (!sigueVivo) return;
+                        if (!sigueVivo) {
+                            return;
+                        }
                         gsap.to(recipient.posicion, { x: recipient.posicion.x + 10, yoyo: true, repeat: 3, duration: 0.06 });
                         gsap.to(recipient, { opacity: 0, repeat: 3, yoyo: true, duration: 0.06 });
                     }
                 })
                 .to(attacker.posicion, { x: attacker.posicion.x, duration: 0.1, onComplete: alTerminarAtaque });
             break;
-
-        // PF3
-        // PF3
         case 'AtaqueRapido':
             const quickAttackImage = new Image();
             const QuickAttack = new Sprite({
@@ -433,31 +398,25 @@ function attack(attacker, { attack, recipient, renderSprites }) {
             };
             quickAttackImage.src = './img/ataqueRapido.png';
             renderSprites.push(QuickAttack);
-
-            // PF3
             gsap.to(QuickAttack.posicion, {
                 duration: 0.6,
                 onComplete: () => renderSprites.splice(renderSprites.indexOf(QuickAttack), 1)
             });
-
-            // PF3
-            // PF3
             timeLine.to(attacker.posicion, { x: attacker.posicion.x - movementDistance, duration: 0.04 })
                 .to(attacker.posicion, {
                     x: attacker.posicion.x + movementDistance * 2,
                     duration: 0.04,
                     onComplete: () => {
                         const sigueVivo = attacker.applyDamage(recipient, attack, healthBar);
-                        if (!sigueVivo) return;
+                        if (!sigueVivo) {
+                            return;
+                        }
                         gsap.to(recipient.posicion, { x: recipient.posicion.x + 10, yoyo: true, repeat: 3, duration: 0.06 });
                         gsap.to(recipient, { opacity: 0, repeat: 3, yoyo: true, duration: 0.06 });
                     }
                 })
                 .to(attacker.posicion, { x: attacker.posicion.x, duration: 0.04, onComplete: alTerminarAtaque });
             break;
-
-        // PF3
-        // PF3
         case 'Trueno':
             const truenoImage = new Image();
             const trueno = new Sprite({
@@ -473,30 +432,25 @@ function attack(attacker, { attack, recipient, renderSprites }) {
             };
             truenoImage.src = './img/trueno.png';
             renderSprites.push(trueno);
-
-            // PF3
             gsap.to(trueno.posicion, {
-                duration: 0.7 ,
+                duration: 0.7,
                 onComplete: () => renderSprites.splice(renderSprites.indexOf(trueno), 1)
             });
-
-            // PF3
             timeLine.to(attacker.posicion, { x: attacker.posicion.x - movementDistance, duration: 0.1 })
                 .to(attacker.posicion, {
                     x: attacker.posicion.x + movementDistance * 2,
                     duration: 0.05,
                     onComplete: () => {
                         const sigueVivo = attacker.applyDamage(recipient, attack, healthBar);
-                        if (!sigueVivo) return;
+                        if (!sigueVivo) {
+                            return;
+                        }
                         gsap.to(recipient.posicion, { x: recipient.posicion.x + 10, yoyo: true, repeat: 3, duration: 0.06 });
                         gsap.to(recipient, { opacity: 0, repeat: 3, yoyo: true, duration: 0.06 });
                     }
                 })
                 .to(attacker.posicion, { x: attacker.posicion.x, duration: 0.1, onComplete: alTerminarAtaque });
             break;
-
-        // PF3
-        // PF3
         case 'Tackle':
             timeLine.to(attacker.posicion, { x: attacker.posicion.x - movementDistance, duration: 0.1 })
                 .to(attacker.posicion, {
@@ -504,16 +458,15 @@ function attack(attacker, { attack, recipient, renderSprites }) {
                     duration: 0.05,
                     onComplete: () => {
                         const sigueVivo = attacker.applyDamage(recipient, attack, healthBar);
-                        if (!sigueVivo) return;
+                        if (!sigueVivo) {
+                            return;
+                        }
                         gsap.to(recipient.posicion, { x: recipient.posicion.x + 10, yoyo: true, repeat: 3, duration: 0.06 });
                         gsap.to(recipient, { opacity: 0, repeat: 3, yoyo: true, duration: 0.06 });
                     }
                 })
                 .to(attacker.posicion, { x: attacker.posicion.x, duration: 0.1, onComplete: alTerminarAtaque });
             break;
-
-        // PF3
-        // PF3
         case 'cuchillada':
             timeLine.to(attacker.posicion, { x: attacker.posicion.x - movementDistance, duration: 0.1 })
                 .to(attacker.posicion, {
@@ -521,7 +474,9 @@ function attack(attacker, { attack, recipient, renderSprites }) {
                     duration: 0.05,
                     onComplete: () => {
                         const sigueVivo = attacker.applyDamage(recipient, attack, healthBar);
-                        if (!sigueVivo) return;
+                        if (!sigueVivo) {
+                            return;
+                        }
                         gsap.to(recipient.posicion, { x: recipient.posicion.x + 10, yoyo: true, repeat: 3, duration: 0.06 });
                         gsap.to(recipient, { opacity: 0, repeat: 3, yoyo: true, duration: 0.06 });
                     }
@@ -536,7 +491,9 @@ function attack(attacker, { attack, recipient, renderSprites }) {
                     duration: 0.05,
                     onComplete: () => {
                         const sigueVivo = attacker.applyDamage(recipient, attack, healthBar);
-                        if (!sigueVivo) return;
+                        if (!sigueVivo) {
+                            return;
+                        }
                         gsap.to(recipient.posicion, { x: recipient.posicion.x + 10, yoyo: true, repeat: 3, duration: 0.06 });
                         gsap.to(recipient, { opacity: 0, repeat: 3, yoyo: true, duration: 0.06 });
                     }
@@ -545,23 +502,15 @@ function attack(attacker, { attack, recipient, renderSprites }) {
             break;
     }
 }
-
-// PF3
-const battleActivo = { initiated: false, victoriaRegistrada: false }
-
-// PF3
-// PF3
+const battleActivo = { initiated: false, victoriaRegistrada: false };
 let battleCooldown = false;
-
-// PF3
-
 document.querySelector('#dialogoBox').addEventListener('click', (event) => {
-    if (accionBatallaEnProgreso) return;
+    if (accionBatallaEnProgreso) {
+        return;
+    }
 
     event.currentTarget.style.display = 'none';
-})
-
-// PF3
+});
 function finalizarCombate() {
     window.cancelAnimationFrame(battleAnimationID);
     musicaBatalla.pause();
@@ -574,9 +523,11 @@ function finalizarCombate() {
     accionBatallaEnProgreso = false;
     battleActivo.initiated = false;
     animate();
-}
 
-// PF3
+    if (typeof guardarEstadoPartidaSilencioso === 'function') {
+        guardarEstadoPartidaSilencioso();
+    }
+}
 document.querySelector('.battle-ui').style.display = 'none';
 document.querySelector('.footer').style.display = 'none';
 document.querySelector('#dialogoBox').style.display = 'none';

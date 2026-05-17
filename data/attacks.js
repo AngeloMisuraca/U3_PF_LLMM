@@ -1,3 +1,4 @@
+// Define ataques y daño de combate.
 const tackles = {
     Tackle: {
         name: 'Tackle',
@@ -15,7 +16,7 @@ const tackles = {
         name: 'Tacleada_de_Voltios',
         damage: 30,
     },
-}
+};
 
 const ataquesCharmander = {
     cuchillada: {
@@ -27,4 +28,3 @@ const ataquesCharmander = {
         damage: 30
     },
 };
-

@@ -5,20 +5,19 @@ let simboloMovible = [];
 const desplazamiento = {
     x: -640,
     y: -500
-}
+};
 
-// PF3
+// Prepara colisiones y zonas de batalla del mapa.
 function colisionRectangular({ rectangulo1, rectangulo2 }) {
     return (
         rectangulo1.posicion.x + rectangulo1.width >= rectangulo2.posicion.x &&
         rectangulo1.posicion.x <= rectangulo2.posicion.x + rectangulo2.width &&
         rectangulo1.posicion.y <= rectangulo2.posicion.y + rectangulo2.height &&
         rectangulo1.posicion.y + rectangulo1.height >= rectangulo2.posicion.y
-    )
+    );
 }
 
 function mapeo() {
-
     const collisionMap = [];
     for (let i = 0; i < collisions.length; i += 70) {
         collisionMap.push(collisions.slice(i, 70 + i));
@@ -40,10 +39,10 @@ function mapeo() {
                         x: j * Limite.width + desplazamiento.x,
                         y: i * Limite.height + desplazamiento.y,
                     }
-                }))
+                }));
             }
-        })
-    })
+        });
+    });
 
     battleZoneMap.forEach((row, i) => {
         row.forEach((simbolo, j) => {
@@ -53,10 +52,10 @@ function mapeo() {
                         x: j * Limite.width + desplazamiento.x,
                         y: i * Limite.height + desplazamiento.y,
                     }
-                }))
+                }));
             }
-        })
-    })
+        });
+    });
 
     simboloMovible = [fondo, ...limites, foreground, ...battleZones];
 }

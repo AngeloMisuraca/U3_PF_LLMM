@@ -1,5 +1,7 @@
 let jugador, fondo, foreground, battleBackground, charmander, pikachu;
 const renderSprites = [];
+
+// Carga y cambia los sprites visibles del juego.
 const spritesEntrenadores = {
     maximo: {
         arriba: './img/MaximoUp.png',
@@ -33,7 +35,9 @@ function cargarSpritesEntrenador(personaje = 'maximo') {
 }
 
 function cambiarSpriteJugador(personaje = 'maximo') {
-    if (!jugador) return;
+    if (!jugador) {
+        return;
+    }
 
     const sprites = cargarSpritesEntrenador(personaje);
     jugador.sprites = sprites;
@@ -42,7 +46,9 @@ function cambiarSpriteJugador(personaje = 'maximo') {
 }
 
 function ponerDireccionJugador(direccion) {
-    if (!jugador || !jugador.sprites[direccion]) return;
+    if (!jugador || !jugador.sprites[direccion]) {
+        return;
+    }
 
     jugador.image = jugador.sprites[direccion];
     actualizarDimensionesJugador();
@@ -50,7 +56,9 @@ function ponerDireccionJugador(direccion) {
 }
 
 function actualizarDimensionesJugador() {
-    if (!jugador || !jugador.image.width) return;
+    if (!jugador || !jugador.image.width) {
+        return;
+    }
 
     jugador.width = jugador.image.width / jugador.frames.max;
     jugador.height = jugador.image.height;
@@ -58,10 +66,10 @@ function actualizarDimensionesJugador() {
 
 function SpriteImages() {
     const image = new Image();
-    image.src = './img/pokemon style game map.png'
+    image.src = './img/pokemon style game map.png';
 
     const foregroundImage = new Image();
-    foregroundImage.src = './img/foreground.png'
+    foregroundImage.src = './img/foreground.png';
 
     const spritesJugador = cargarSpritesEntrenador();
 
@@ -75,7 +83,7 @@ function SpriteImages() {
             max: 4
         },
         sprites: spritesJugador
-    })
+    });
 
     fondo = new Sprite({
         posicion: {

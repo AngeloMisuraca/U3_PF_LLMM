@@ -3,6 +3,7 @@ const mensajeLogin = document.querySelector('#mensajeLogin');
 const opcionesPersonaje = document.querySelectorAll('.personajeOpcion');
 const rutaPersonajeXampp = 'http://localhost/Proyecto_final_3/backend/character.html';
 
+// Controla la seleccion del personaje inicial.
 function redirigirAXamppSiHaceFalta() {
     const hostCorrecto = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const puertoCorrecto = window.location.port === '' || window.location.port === '80';
@@ -48,6 +49,7 @@ async function comprobarSesion() {
 
     if (sesion.personaje) {
         window.location.href = '../game.html';
+        return;
     }
 }
 

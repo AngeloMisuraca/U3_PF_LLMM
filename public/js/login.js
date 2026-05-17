@@ -4,6 +4,7 @@ const formLogin = document.querySelector('#formLogin');
 const mensajeLogin = document.querySelector('#mensajeLogin');
 const rutaLoginXampp = 'http://localhost/Proyecto_final_3/backend/login.html';
 
+// Gestiona el acceso del entrenador.
 function redirigirAXamppSiHaceFalta() {
     const hostCorrecto = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const puertoCorrecto = window.location.port === '' || window.location.port === '80';

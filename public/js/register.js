@@ -1,5 +1,6 @@
 const formRegistro = document.querySelector('#formRegistro');
 
+// Envia el formulario de registro al backend.
 formRegistro.addEventListener('submit', async (event) => {
     event.preventDefault();
 

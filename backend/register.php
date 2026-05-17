@@ -6,9 +6,23 @@ header("Content-Type: application/json");
 
 $data = getRequestData();
 
-$username = trim($data['username'] ?? $data['usuario'] ?? '');
-$email = trim($data['email'] ?? '');
-$password = $data['password'] ?? '';
+// Normaliza los datos del formulario de registro antes de validar.
+$username = "";
+if (isset($data['username'])) {
+  $username = trim($data['username']);
+} elseif (isset($data['usuario'])) {
+  $username = trim($data['usuario']);
+}
+
+$email = "";
+if (isset($data['email'])) {
+  $email = trim($data['email']);
+}
+
+$password = "";
+if (isset($data['password'])) {
+  $password = $data['password'];
+}
 
 if ($username === '' || $email === '' || $password === '') {
   echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios"]);
@@ -17,6 +31,8 @@ if ($username === '' || $email === '' || $password === '') {
 
 try {
   $connection = getDbConnection();
+
+  // Evita usuarios duplicados antes de insertar la nueva cuenta.
   $checkSql = "SELECT id FROM usuarios WHERE username = ? OR email = ? LIMIT 1";
   $checkStatement = $connection->prepare($checkSql);
   $checkStatement->bind_param("ss", $username, $email);
@@ -32,6 +48,7 @@ try {
     exit;
   }
 
+  // Crea el entrenador y deja la sesion iniciada para elegir personaje.
   $insertSql = "INSERT INTO usuarios (username, email, password) VALUES (?, ?, ?)";
   $insertStatement = $connection->prepare($insertSql);
   $insertStatement->bind_param("sss", $username, $email, $password);
